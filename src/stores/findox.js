@@ -23,11 +23,11 @@ export const useFinDoxStore = defineStore('findox', {
       if (this.dataFetched) return
 
       try {
-        await fetch('/data/deals.json')
+        await fetch('./data/deals.json')
           .then((response) => response.json())
           .then((jsonData) => (this.rawDealsData = jsonData.data))
 
-        await fetch('/data/docs.json')
+        await fetch('./data/docs.json')
           .then((response) => response.json())
           .then((jsonData) => (this.rawDocsData = jsonData.data))
 
