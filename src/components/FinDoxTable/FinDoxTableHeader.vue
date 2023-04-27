@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import Button from '../common/Button.vue'
+import Button from '../common/FindoxButton.vue'
 
 const props = defineProps({
   data: Array,

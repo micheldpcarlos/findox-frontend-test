@@ -1,9 +1,9 @@
 <script setup>
 import ColumnSelector from '../components/ColumnSelector.vue'
 import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue'
-import Button from '../components/common/Button.vue'
+import Button from '../components/common/FindoxButton.vue'
 import { useFinDoxStore } from '../stores/findox'
-import { ref, computed, h } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import xlsx from 'json-as-xlsx'
 import { useRouter } from 'vue-router'
 
@@ -31,10 +31,14 @@ const columnsToShow = computed(() => {
 
 const router = useRouter()
 const numberFromParam = Number(router.currentRoute.value.params.id)
-const documents = computed(() => {
+
+onMounted(() => {
   if (isNaN(numberFromParam)) {
     router.push('/deals')
   }
+})
+
+const documents = computed(() => {
   return finDoxStore.docs.filter((document) => document.dealId === numberFromParam)
 })
 
@@ -81,10 +85,10 @@ const onGoBack = () => {
 <template>
   <div class="documents">
     <h1>Documents View</h1>
-    <p v-if="dealData" class="deal-info">
+    <span v-if="dealData" class="deal-info">
       <div>{{ dealData.dealName }}</div>
-    <div class="sub">{{ dealData.issuer }}</div>
-    </p>
+      <div class="sub">{{ dealData.issuer }}</div>
+    </span>
     <Button type="link" icon-name="fa-arrow-left" @click="onGoBack" style="padding: 0"
       >Go back</Button
     >

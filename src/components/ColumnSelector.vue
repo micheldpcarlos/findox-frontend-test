@@ -1,5 +1,5 @@
 <script setup>
-import Button from '../components/common/Button.vue'
+import Button from '../components/common/FindoxButton.vue'
 import { onMounted, ref, defineEmits } from 'vue'
 const props = defineProps({
   columns: Array
@@ -18,7 +18,6 @@ const onSave = () => {
 }
 
 const onCancel = () => {
-  userColumns.value = userColumns.value
   emit('onClose')
 }
 

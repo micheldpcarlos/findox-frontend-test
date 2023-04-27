@@ -2,8 +2,6 @@
 import FinDoxTableHeader from './FinDoxTableHeader.vue'
 import { computed, ref, useSlots, watch } from 'vue'
 import { orderBy } from 'lodash'
-import { RecycleScroller } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 const props = defineProps({
   columns: Array,
@@ -110,7 +108,12 @@ defineExpose({
     <table>
       <colgroup>
         <col span="1" :style="{ width: '40px' }" />
-        <col v-for="col in columns" span="1" :style="{ width: col.width ? col.width : '300px' }" />
+        <col
+          v-for="col in columns"
+          span="1"
+          :style="{ width: col.width ? col.width : '300px' }"
+          :key="col.key"
+        />
       </colgroup>
       <thead>
         <tr>
@@ -125,7 +128,7 @@ defineExpose({
               @change="onSelectAll"
             />
           </th>
-          <th v-for="column in columns">
+          <th v-for="column in columns" :key="column.key">
             <FinDoxTableHeader
               :column="column"
               :data="data"
@@ -148,6 +151,7 @@ defineExpose({
           v-for="(rowData, index) in dataToShow"
           :class="{ gray: index % 2 === 1 }"
           @click="emit('onRowClick', dataFiltered[index])"
+          :key="dataFiltered[index][dataKey]"
         >
           <td class="selector-input" @click.stop="">
             <input
@@ -157,7 +161,7 @@ defineExpose({
               @change="onSelectItem($event, dataFiltered[index][dataKey])"
             />
           </td>
-          <td v-for="cellData in rowData" width="row">
+          <td v-for="cellData in rowData" :key="dataFiltered[index][dataKey] + cellData">
             <span :title="cellData">{{ cellData }}</span>
           </td>
         </tr>

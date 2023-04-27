@@ -1,8 +1,8 @@
 <script setup>
-const props = defineProps({
-  type: 'primary' | 'secondary' | undefined,
+defineProps({
+  type: String,
   iconName: String,
-  iconLocation: 'before' | 'after'
+  iconLocation: String
 })
 </script>
 

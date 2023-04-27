@@ -1,9 +1,9 @@
 <script setup>
 import ColumnSelector from '../components/ColumnSelector.vue'
 import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue'
-import Button from '../components/common/Button.vue'
+import Button from '../components/common/FindoxButton.vue'
 import { useFinDoxStore } from '../stores/findox'
-import { ref, computed, h } from 'vue'
+import { ref, computed } from 'vue'
 import xlsx from 'json-as-xlsx'
 import { useRouter } from 'vue-router'
 
@@ -41,7 +41,6 @@ const columnsToShow = computed(() => {
 
 const filterString = ref('')
 const dataTable = ref()
-const isColumnsMenuActive = ref(false)
 
 const exportTableData = () => {
   if (dataTable.value) {
