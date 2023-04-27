@@ -1,0 +1,32 @@
+@import 'reset';
+@import 'variables';
+
+// Import Jost font
+@import url('https://fonts.googleapis.com/css2?family=Jost&display=swap');
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--default-body-bg);
+}
+
+h1 {
+  font-size: 24px;
+}
+
+input[type='text'] {
+  height: 32px;
+  width: 300px;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  background-color: var(--white-color);
+  border: 1px solid var(--gray-color);
+  border-radius: 3px;
+  &::placeholder {
+    opacity: 0.2;
+  }
+}
+
+// just use the default
+input[type='checkbox'] {
+  all: revert;
+}
