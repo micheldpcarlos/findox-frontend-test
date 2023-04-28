@@ -1,91 +1,47 @@
 <script setup>
-import ColumnSelector from '../components/ColumnSelector.vue'
-import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue'
-import Button from '../components/common/FindoxButton.vue'
-import { useFinDoxStore } from '../stores/findox'
-import { ref, computed } from 'vue'
-import xlsx from 'json-as-xlsx'
-import { useRouter } from 'vue-router'
+import ColumnSelector from '../components/ColumnSelector.vue';
+import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue';
+import Button from '../components/common/FindoxButton.vue';
+import { useFinDoxStore } from '../stores/findox';
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { dealsColumnsConfig } from '../helpers/constants';
+import { useExcelExporter } from '../composables/excelExporter';
 
-const finDoxStore = useFinDoxStore()
+const finDoxStore = useFinDoxStore();
 
 // Columns configuration needed to the table
-const columns = ref([
-  {
-    title: 'Deal',
-    key: 'dealName',
-    width: '400px',
-    enabled: true
-  },
-  { title: 'Issuer', key: 'issuer', enabled: true },
-  { title: 'Industry', key: 'industry', enabled: true },
-  { title: 'Agent', key: 'agent', enabled: true },
-  { title: 'Source', key: 'source', enabled: true },
-
-  { title: 'Boomberg Id', key: 'bloombergId', enabled: true },
-  { title: 'ISIN', key: 'isin', enabled: true },
-  { title: 'Custom Identifiers', key: 'customDealIdentifiers', enabled: true },
-  { title: 'Custom Issuer Identifiers', key: 'customIssuerIdentifiers', enabled: true },
-  { title: 'Status', key: 'status', enabled: true },
-  { title: 'Total', key: 'total', enabled: true },
-  { title: 'Last Posted', key: 'lastPosted', enabled: true },
-  { title: 'Last Accessed', key: 'lastAccessed', enabled: true },
-  { title: 'Analysts', key: 'analysts', enabled: true },
-  { title: 'Documents Count', key: 'docCount', enabled: true },
-  { title: 'Custom Field', key: 'customField', enabled: true }
-])
+const columns = ref(dealsColumnsConfig);
 
 const columnsToShow = computed(() => {
-  return columns.value.filter((column) => column.enabled)
-})
+  return columns.value.filter((column) => column.enabled);
+});
 
-const filterString = ref('')
-const dataTable = ref()
-
-const exportTableData = () => {
-  if (dataTable.value) {
-    downloadExcel(dataTable.value.exportTableData())
-  }
-}
+const filterString = ref('');
 
 const onColumnsChange = (event) => {
-  columns.value = JSON.parse(JSON.stringify(event))
-}
+  columns.value = JSON.parse(JSON.stringify(event));
+};
 
-const onSelectionChange = (e) => console.log(e)
+const onSelectionChange = (e) => console.log(e);
 
-const downloadExcel = (data) => {
-  const xlsxData = [
-    {
-      sheet: 'Deals',
-      columns: columnsToShow.value.map((column) => {
-        return { label: column.title, value: column.key }
-      }),
-      content: data
-    }
-  ]
-  const settings = {
-    fileName: 'Deals'
-  }
+const { dataTableRef, exportTableData } = useExcelExporter();
 
-  xlsx(xlsxData, settings)
-}
-
-const router = useRouter()
+const router = useRouter();
 const onRowClick = (data) => {
-  router.push({ name: 'Documents', params: { id: data.id } })
-}
+  router.push({ name: 'Documents', params: { id: data.id } });
+};
 </script>
 <template>
   <div class="deals">
     <h1>Deals View</h1>
     <div class="actions">
       <input
+        v-model="filterString"
         class="search-input"
         type="text"
         name="search"
         placeholder="Search"
-        v-model="filterString"
       />
       <Button icon-name="fa-user-plus" disabled>Assign Analysts</Button>
       <VDropdown :distance="6" placement="bottom-end">
@@ -98,15 +54,15 @@ const onRowClick = (data) => {
           />
         </template>
       </VDropdown>
-      <Button icon-name="fa-file-excel" @click="exportTableData">Export</Button>
+      <Button icon-name="fa-file-excel" @click="exportTableData(columnsToShow)">Export</Button>
     </div>
     <FinDoxTable
-      ref="dataTable"
+      ref="dataTableRef"
+      v-model:filter="filterString"
       height="calc(100vh - 200px)"
       :columns="columnsToShow"
       :data="finDoxStore.deals"
       data-key="id"
-      v-model:filter="filterString"
       @on-selection-change="onSelectionChange"
       @on-row-click="onRowClick"
     >

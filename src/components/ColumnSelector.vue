@@ -1,41 +1,41 @@
 <script setup>
-import Button from '../components/common/FindoxButton.vue'
-import { onMounted, ref, defineEmits } from 'vue'
+import Button from '../components/common/FindoxButton.vue';
+import { onMounted, ref, defineEmits } from 'vue';
 const props = defineProps({
   columns: Array
-})
+});
 
-const userColumns = ref([])
+const userColumns = ref([]);
 onMounted(() => {
-  userColumns.value = JSON.parse(JSON.stringify(props.columns))
-})
+  userColumns.value = JSON.parse(JSON.stringify(props.columns));
+});
 
-const emit = defineEmits(['onClose', 'onColumnsChange'])
+const emit = defineEmits(['onClose', 'onColumnsChange']);
 
 const onSave = () => {
-  emit('onColumnsChange', userColumns.value)
-  emit('onClose')
-}
+  emit('onColumnsChange', userColumns.value);
+  emit('onClose');
+};
 
 const onCancel = () => {
-  emit('onClose')
-}
+  emit('onClose');
+};
 
 const onReset = () => {
   userColumns.value = userColumns.value.map((column) => {
-    return { ...column, enabled: true }
-  })
+    return { ...column, enabled: true };
+  });
 
-  emit('onColumnsChange', userColumns.value)
-  emit('onClose')
-}
+  emit('onColumnsChange', userColumns.value);
+  emit('onClose');
+};
 </script>
 
 <template>
   <div class="column-selector">
     <div class="columns-list">
-      <div class="checkbox-input" v-for="column in userColumns" :key="column.key">
-        <input type="checkbox" :id="column.key" name="scales" v-model="column.enabled" />
+      <div v-for="column in userColumns" :key="column.key" class="checkbox-input">
+        <input :id="column.key" v-model="column.enabled" type="checkbox" name="scales" />
         <label for="scales">{{ column.title }}</label>
       </div>
     </div>

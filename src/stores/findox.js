@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { v4 as uuidv4 } from 'uuid'
+import { defineStore } from 'pinia';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useFinDoxStore = defineStore('findox', {
   // arrow function recommended for full type inference
@@ -11,7 +11,7 @@ export const useFinDoxStore = defineStore('findox', {
       deals: [],
       docs: [],
       loading: true
-    }
+    };
   },
   actions: {
     /**
@@ -20,44 +20,44 @@ export const useFinDoxStore = defineStore('findox', {
      */
     async getData() {
       // avoid fetching the json again if already in memory
-      if (this.dataFetched) return
+      if (this.dataFetched) return;
 
       try {
         await fetch('./data/deals.json')
           .then((response) => response.json())
-          .then((jsonData) => (this.rawDealsData = jsonData.data))
+          .then((jsonData) => (this.rawDealsData = jsonData.data));
 
         await fetch('./data/docs.json')
           .then((response) => response.json())
-          .then((jsonData) => (this.rawDocsData = jsonData.data))
+          .then((jsonData) => (this.rawDocsData = jsonData.data));
 
-        this.mapDealsFromJson()
-        this.mapDocumentsFromJson()
+        this.mapDealsFromJson();
+        this.mapDocumentsFromJson();
 
-        this.loading = false
+        this.loading = false;
       } catch (error) {
-        alert('Error while loading deals raw data')
+        alert('Error while loading deals raw data');
       }
     },
     mapDealsFromJson() {
       this.deals = this.rawDealsData.Holdings.map((deal) => {
         const issuer = this.rawDealsData.ClientIssuers.find(
           (issuer) => issuer.IssuerId === deal.IssuerId
-        )
+        );
         const industry = this.rawDealsData.Industries.find(
           (industry) => industry.Id === deal.IndustryId
-        )
-        const agent = this.rawDealsData.Agents.find((agent) => agent.Id === deal.AgentId)
-        const source = this.rawDealsData.Sources.find((source) => source.Id === deal.SourceId)
+        );
+        const agent = this.rawDealsData.Agents.find((agent) => agent.Id === deal.AgentId);
+        const source = this.rawDealsData.Sources.find((source) => source.Id === deal.SourceId);
         const analysts = this.rawDealsData.Analysts.filter(
           (analyst) => deal.AnalystIds?.length && deal.AnalystIds.includes(analyst.UserId)
-        )
+        );
 
         // using .holding property of the first doc of the deal to get some info
         // it seems to be the same for every document with this deal_id
         const firstDocHolding = this.rawDocsData.docs.find(
           (doc) => doc.deal_id === deal.DealId
-        )?.holding
+        )?.holding;
 
         return {
           id: deal.DealId,
@@ -77,8 +77,8 @@ export const useFinDoxStore = defineStore('findox', {
           analysts: analysts.map((analyst) => analyst.FullName),
           docCount: Number(deal.DocCount),
           customField: deal.ClientCustomField
-        }
-      })
+        };
+      });
     },
     mapDocumentsFromJson() {
       this.docs = this.rawDocsData.docs.map((doc) => {
@@ -91,8 +91,8 @@ export const useFinDoxStore = defineStore('findox', {
           lastAccessed: doc.last_accessed,
           note: doc.email_note, // email_note or the sometimes Base64 source_file.note???
           filePath: doc.original_path + doc.original_filename
-        }
-      })
+        };
+      });
     }
   }
-})
+});

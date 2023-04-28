@@ -1,6 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
-import Button from '../common/FindoxButton.vue'
+import { computed, ref } from 'vue';
+import Button from '../common/FindoxButton.vue';
 
 const props = defineProps({
   data: Array,
@@ -8,74 +8,74 @@ const props = defineProps({
   sortKey: String,
   sortOrder: String,
   columnFilters: Array
-})
+});
 
-const emit = defineEmits(['onSort', 'onFilterChange'])
+const emit = defineEmits(['onSort', 'onFilterChange']);
 
 const onSortBy = () => {
-  let order = 'asc'
+  let order = 'asc';
   if (props.column.key === props.sortKey) {
-    order = props.sortOrder === 'asc' ? 'desc' : 'asc'
+    order = props.sortOrder === 'asc' ? 'desc' : 'asc';
   }
 
-  emit('onSort', { key: props.column.key, order: order })
-}
+  emit('onSort', { key: props.column.key, order: order });
+};
 
 const iconName = computed(() => {
   switch (props.sortKey) {
     case props.column.key:
-      return `fa-solid ${props.sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`
+      return `fa-solid ${props.sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`;
     default:
-      return 'fa-solid fa-sort'
+      return 'fa-solid fa-sort';
   }
-})
+});
 
-const showFilter = ref(false)
-const dataToFilter = ref(new Map([]))
-const filterString = ref('')
+const showFilter = ref(false);
+const dataToFilter = ref(new Map([]));
+const filterString = ref('');
 
 const onShowFilter = () => {
-  updateFilterEntries()
-  showFilter.value = true
-}
+  updateFilterEntries();
+  showFilter.value = true;
+};
 
 const updateFilterEntries = () => {
-  dataToFilter.value.clear()
+  dataToFilter.value.clear();
   props.data.forEach((data) => {
-    const textData = data[props.column.key]
-    const isSelected = textData && props.columnFilters && props.columnFilters.includes(textData)
+    const textData = data[props.column.key];
+    const isSelected = textData && props.columnFilters && props.columnFilters.includes(textData);
 
-    dataToFilter.value.set(textData, isSelected)
-  })
-}
+    dataToFilter.value.set(textData, isSelected);
+  });
+};
 
 const mapToRender = computed(() => {
   return new Map(
     [...dataToFilter.value].filter(([key]) =>
       key.toLowerCase().includes(filterString.value.toLowerCase())
     )
-  )
-})
+  );
+});
 
 const onFilterChange = (key, isEnabled) => {
-  dataToFilter.value.set(key, isEnabled)
+  dataToFilter.value.set(key, isEnabled);
   const dataToEmit = [...dataToFilter.value]
     .filter((data) => data[1] === true)
-    .map((data) => data[0])
-  emit('onFilterChange', dataToEmit)
-}
+    .map((data) => data[0]);
+  emit('onFilterChange', dataToEmit);
+};
 
 const onClearFilters = () => {
   dataToFilter.value.forEach((value, key) => {
-    dataToFilter.value.set(key, false)
-  })
+    dataToFilter.value.set(key, false);
+  });
 
-  emit('onFilterChange', [])
-}
+  emit('onFilterChange', []);
+};
 
 const onHideFilter = () => {
-  showFilter.value = false
-}
+  showFilter.value = false;
+};
 </script>
 <template>
   <div class="table-title" @click="onSortBy">
@@ -102,7 +102,7 @@ const onHideFilter = () => {
         />
       </button>
       <template #popper="{ hide }">
-        <div class="filter-content" v-if="showFilter">
+        <div v-if="showFilter" class="filter-content">
           <h3>{{ column.title }}</h3>
           <div class="buttons">
             <Button type="link" @click="emit('onSort', { key: column.key, order: 'asc' })"
@@ -113,17 +113,17 @@ const onHideFilter = () => {
             >
           </div>
           <input
+            v-model="filterString"
             class="filter-input"
             type="text"
             name="filter"
             :placeholder="`Filter ${column.title}`"
-            v-model="filterString"
           />
           <div class="item-list">
-            <div v-for="[dataKey, enabled] in mapToRender" class="item" :key="dataKey">
+            <div v-for="[dataKey, enabled] in mapToRender" :key="dataKey" class="item">
               <input
-                type="checkbox"
                 :id="dataKey"
+                type="checkbox"
                 :checked="enabled"
                 @change="onFilterChange(dataKey, !enabled)"
               />

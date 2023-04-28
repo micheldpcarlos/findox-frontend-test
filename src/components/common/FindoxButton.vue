@@ -3,7 +3,7 @@ defineProps({
   type: String,
   iconName: String,
   iconLocation: String
-})
+});
 </script>
 
 <template>

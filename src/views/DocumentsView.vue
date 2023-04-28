@@ -1,86 +1,52 @@
 <script setup>
-import ColumnSelector from '../components/ColumnSelector.vue'
-import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue'
-import Button from '../components/common/FindoxButton.vue'
-import { useFinDoxStore } from '../stores/findox'
-import { ref, computed, onMounted } from 'vue'
-import xlsx from 'json-as-xlsx'
-import { useRouter } from 'vue-router'
+import ColumnSelector from '../components/ColumnSelector.vue';
+import FinDoxTable from '../components/FinDoxTable/FinDoxTable.vue';
+import Button from '../components/common/FindoxButton.vue';
+import { useFinDoxStore } from '../stores/findox';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { docsColumnsConfig } from '../helpers/constants';
+import { useExcelExporter } from '../composables/excelExporter';
 
-const finDoxStore = useFinDoxStore()
+const finDoxStore = useFinDoxStore();
 
 // Columns configuration needed to the table
-const columns = ref([
-  {
-    title: 'Document Name',
-    key: 'documentName',
-    width: '400px',
-    enabled: true
-  },
-  { title: 'Deal Id', key: 'dealId', enabled: true },
-  { title: 'Posted', key: 'posted', enabled: true },
-  { title: 'Last Accessed', key: 'lastAccessed', enabled: true },
-  { title: 'File Path', key: 'filePath', width: '600px', enabled: true },
-  { title: 'Note', key: 'note', enabled: true },
-  { title: 'Tag', key: 'tag', enabled: true }
-])
+const columns = ref(docsColumnsConfig);
 
 const columnsToShow = computed(() => {
-  return columns.value.filter((column) => column.enabled)
-})
+  return columns.value.filter((column) => column.enabled);
+});
 
-const router = useRouter()
-const numberFromParam = Number(router.currentRoute.value.params.id)
+const router = useRouter();
+const numberFromParam = Number(router.currentRoute.value.params.id);
 
 onMounted(() => {
   if (isNaN(numberFromParam)) {
-    router.push('/deals')
+    router.push('/deals');
   }
-})
+});
 
 const documents = computed(() => {
-  return finDoxStore.docs.filter((document) => document.dealId === numberFromParam)
-})
+  return finDoxStore.docs.filter((document) => document.dealId === numberFromParam);
+});
 
 const dealData = computed(() => {
-  return finDoxStore.deals.find((deal) => deal.id === numberFromParam)
-})
+  return finDoxStore.deals.find((deal) => deal.id === numberFromParam);
+});
 
-const filterString = ref('')
-const dataTable = ref()
-
-const exportTableData = () => {
-  if (dataTable.value) {
-    downloadExcel(dataTable.value.exportTableData())
-  }
-}
+const filterString = ref('');
 
 const onColumnsChange = (event) => {
-  columns.value = JSON.parse(JSON.stringify(event))
-}
+  columns.value = JSON.parse(JSON.stringify(event));
+};
 
-const onSelectionChange = (e) => console.log(e)
+const onSelectionChange = (e) => console.log(e);
 
-const downloadExcel = (data) => {
-  const xlsxData = [
-    {
-      sheet: 'Documents',
-      columns: columnsToShow.value.map((column) => {
-        return { label: column.title, value: column.key }
-      }),
-      content: data
-    }
-  ]
-  const settings = {
-    fileName: 'Documents'
-  }
-
-  xlsx(xlsxData, settings)
-}
+const { dataTableRef, exportTableData } = useExcelExporter();
 
 const onGoBack = () => {
-  router.go(-1)
-}
+  router.go(-1);
+};
 </script>
 <template>
   <div class="documents">
@@ -89,16 +55,16 @@ const onGoBack = () => {
       <div>{{ dealData.dealName }}</div>
       <div class="sub">{{ dealData.issuer }}</div>
     </span>
-    <Button type="link" icon-name="fa-arrow-left" @click="onGoBack" style="padding: 0"
+    <Button type="link" icon-name="fa-arrow-left" style="padding: 0" @click="onGoBack"
       >Go back</Button
     >
     <div class="actions">
       <input
+        v-model="filterString"
         class="search-input"
         type="text"
         name="search"
         placeholder="Search"
-        v-model="filterString"
       />
       <VDropdown :distance="6" placement="bottom-end">
         <Button icon-name="fa-cog">Columns</Button>
@@ -110,15 +76,15 @@ const onGoBack = () => {
           />
         </template>
       </VDropdown>
-      <Button icon-name="fa-file-excel" @click="exportTableData">Export</Button>
+      <Button icon-name="fa-file-excel" @click="exportTableData(columnsToShow)">Export</Button>
     </div>
     <FinDoxTable
-      ref="dataTable"
+      ref="dataTableRef"
+      v-model:filter="filterString"
       height="calc(100vh - 280px"
       :columns="columnsToShow"
       :data="documents"
       data-key="id"
-      v-model:filter="filterString"
       @on-selection-change="onSelectionChange"
     >
       <template #subheader="{ itemsCount }"

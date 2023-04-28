@@ -1,7 +1,7 @@
 <script setup>
-import FinDoxTableHeader from './FinDoxTableHeader.vue'
-import { computed, ref, useSlots, watch } from 'vue'
-import { orderBy } from 'lodash'
+import FinDoxTableHeader from './FinDoxTableHeader.vue';
+import { computed, ref, useSlots, watch } from 'vue';
+import { orderBy } from 'lodash';
 
 const props = defineProps({
   columns: Array,
@@ -9,99 +9,99 @@ const props = defineProps({
   height: String,
   filter: String,
   dataKey: String
-})
+});
 
-const emit = defineEmits(['onSelectionChange', 'onRowClick'])
+const emit = defineEmits(['onSelectionChange', 'onRowClick']);
 
-const slots = useSlots()
+const slots = useSlots();
 
 // sort logic
-const sortKey = ref('')
-const sortOrder = ref('')
+const sortKey = ref('');
+const sortOrder = ref('');
 
 const onTableSort = ({ key, order }) => {
-  sortKey.value = key
-  sortOrder.value = order
-}
+  sortKey.value = key;
+  sortOrder.value = order;
+};
 
-const columnFilters = ref({})
+const columnFilters = ref({});
 
 const onFilterChange = (data, columnKey) => {
   if (!data.length) {
-    delete columnFilters.value[columnKey]
-    return
+    delete columnFilters.value[columnKey];
+    return;
   }
-  columnFilters.value = { ...columnFilters.value, [columnKey]: data }
-}
+  columnFilters.value = { ...columnFilters.value, [columnKey]: data };
+};
 
 const dataFiltered = computed(() => {
-  let dataArray = orderBy(props.data, [sortKey.value], [sortOrder.value])
+  let dataArray = orderBy(props.data, [sortKey.value], [sortOrder.value]);
 
   if (props.filter) {
     dataArray = dataArray.filter((item) => {
-      return Object.values(item).join(',').toLowerCase().includes(props.filter?.toLowerCase())
-    })
+      return Object.values(item).join(',').toLowerCase().includes(props.filter?.toLowerCase());
+    });
   }
 
   // loop selected filters
   for (const [key, filterValues] of Object.entries(columnFilters.value)) {
-    dataArray = dataArray.filter((item) => filterValues.includes(item[key]))
+    dataArray = dataArray.filter((item) => filterValues.includes(item[key]));
   }
 
-  return dataArray
-})
+  return dataArray;
+});
 
 const dataToShow = computed(() => {
   // get only keys that we need to use
-  const dataKeys = props.columns.map((column) => column.key)
+  const dataKeys = props.columns.map((column) => column.key);
 
   // map the data into a new array with only the data we need on it.
   return dataFiltered.value.map((itemData) =>
     dataKeys.reduce((acc, key) => {
-      return { ...acc, [key]: itemData[key] }
+      return { ...acc, [key]: itemData[key] };
     }, {})
-  )
-})
+  );
+});
 
 const exportTableData = () => {
-  return [...dataToShow.value]
-}
+  return [...dataToShow.value];
+};
 
-const selectedItems = ref(new Set([]))
-const allSelected = computed(() => selectedItems.value.size === dataFiltered.value.length)
+const selectedItems = ref(new Set([]));
+const allSelected = computed(() => selectedItems.value.size === dataFiltered.value.length);
 const onSelectAll = (event) => {
   if (event.target.checked) {
     dataFiltered.value.forEach((deal) => {
-      selectedItems.value.add(deal.id)
-    })
+      selectedItems.value.add(deal.id);
+    });
   } else {
-    selectedItems.value = new Set([])
+    selectedItems.value = new Set([]);
   }
 
-  emit('onSelectionChange', [...selectedItems.value])
-}
+  emit('onSelectionChange', [...selectedItems.value]);
+};
 
 const onSelectItem = (event, id) => {
   if (event.target.checked) {
-    selectedItems.value.add(id)
+    selectedItems.value.add(id);
   } else {
-    selectedItems.value.delete(id)
+    selectedItems.value.delete(id);
   }
 
-  emit('onSelectionChange', [...selectedItems.value])
-}
+  emit('onSelectionChange', [...selectedItems.value]);
+};
 
 watch(
   () => props.filter,
   () => {
-    selectedItems.value = new Set([])
+    selectedItems.value = new Set([]);
   }
-)
+);
 
 // Expose the export function
 defineExpose({
   exportTableData
-})
+});
 </script>
 <template>
   <div class="table-wrapper findox-table" :style="{ height }">
@@ -110,9 +110,9 @@ defineExpose({
         <col span="1" :style="{ width: '40px' }" />
         <col
           v-for="col in columns"
+          :key="col.key"
           span="1"
           :style="{ width: col.width ? col.width : '300px' }"
-          :key="col.key"
         />
       </colgroup>
       <thead>
@@ -122,8 +122,8 @@ defineExpose({
             class="selector-input"
           >
             <input
-              type="checkbox"
               id="select-all"
+              type="checkbox"
               :checked="allSelected && dataToShow.length"
               @change="onSelectAll"
             />
@@ -142,21 +142,21 @@ defineExpose({
         </tr>
         <tr v-if="slots.subheader">
           <td :colspan="columns.length + 1" class="subheader-slot">
-            <slot name="subheader" :itemsCount="dataToShow.length" />
+            <slot name="subheader" :items-count="dataToShow.length" />
           </td>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="(rowData, index) in dataToShow"
+          :key="dataFiltered[index][dataKey]"
           :class="{ gray: index % 2 === 1 }"
           @click="emit('onRowClick', dataFiltered[index])"
-          :key="dataFiltered[index][dataKey]"
         >
           <td class="selector-input" @click.stop="">
             <input
-              type="checkbox"
               :id="`select-${dataFiltered[index][dataKey]}`"
+              type="checkbox"
               :checked="selectedItems.has(dataFiltered[index][dataKey])"
               @change="onSelectItem($event, dataFiltered[index][dataKey])"
             />

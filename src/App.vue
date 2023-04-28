@@ -1,19 +1,19 @@
 <script setup>
-import './scss/index.scss'
-import { useFinDoxStore } from './stores/findox'
-import { onMounted } from 'vue'
+import './scss/index.scss';
+import { useFinDoxStore } from './stores/findox';
+import { onMounted } from 'vue';
 
-const finDoxStore = useFinDoxStore()
+const finDoxStore = useFinDoxStore();
 
 onMounted(() => {
-  finDoxStore.getData()
-})
+  finDoxStore.getData();
+});
 </script>
 
 <template>
   <div class="wrapper">
     <div v-if="finDoxStore.loading" class="loader">Loading data...</div>
-    <!-- Keep it alive so the UX is better when goint to documents -->
+    <!-- Keep it alive so the UX is better when going to documents -->
     <router-view v-else v-slot="{ Component }">
       <keep-alive include="DealsView">
         <component :is="Component" />
