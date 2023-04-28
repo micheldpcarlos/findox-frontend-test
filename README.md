@@ -5,14 +5,17 @@
 
 This Project was done as a test to a Senior Frontend Engineer Job @ FinDox
 
+🚀 The project is online here:
+[https://micheldpcarlos.github.io/findox-frontend-test](https://micheldpcarlos.github.io/findox-frontend-test)
+
   
 
 ## Business Requirements 
 1. ✅ Users can search for deals by typing into search box and whatever text they type should be used to filter the rows in the grid by determining if any of the string columns contain that text
 2.  ✅ Users can sort columns and filter rows to specific items (i.e. checkboxes like data filters in excel)
 3.  ✅ Users can drill down into a deal to see the list of documents underneath it
-4. ❓ Users can filter the list of documents by the tag
-	**there is no 'tag' in the datasets, so the user can filter by every field like in deals view**
+4. ❓ Users can filter the list of documents by the tag <br />
+**There is no 'tag' in the datasets, so the user can filter by every field like in deals view**
 
   
 
@@ -21,9 +24,9 @@ This Project was done as a test to a Senior Frontend Engineer Job @ FinDox
 	-  ✅ Column Sorting
 	-  ✅ Filtering in the column header
 	-  ✅ Multi-select
-	- 🕘  Thousands of records and dozens of columns
+	- 🕘  Thousands of records and dozens of columns <br />
 		**The table might experience some lagging when used with Thousands of records.
-		I've created the table component using a table element, and the virtualization of the rows got a bit hairy, so I decided to skip due to short time available**
+		I've created the table component using a table element, and the virtualization of the rows got a bit hairy, so I decided to skip due to short time available** <br />
 		💡 Perhaps taking a look on how some libraries do it, or even changing the structure to grid might help
 	-  ✅ Export
 2. ✅ Use the grid component on both the deals and documents pages
