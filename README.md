@@ -5,6 +5,9 @@
 
 This Project was done as a test to a Senior Frontend Engineer Job @ FinDox
 
+🚀 The project is online here:
+[https://micheldpcarlos.github.io/findox-frontend-test](https://micheldpcarlos.github.io/findox-frontend-test)
+
   
 
 ## Business Requirements 
