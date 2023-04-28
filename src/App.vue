@@ -12,7 +12,7 @@ onMounted(() => {
 
 <template>
   <div class="wrapper">
-    <div v-if="finDoxStore.loading" class="loader">LOADING Data</div>
+    <div v-if="finDoxStore.loading" class="loader">Loading data...</div>
     <!-- Keep it alive so the UX is better when goint to documents -->
     <router-view v-else v-slot="{ Component }">
       <keep-alive include="DealsView">
