@@ -101,7 +101,6 @@ const onGoBack = () => {
   flex-wrap: wrap;
   justify-content: start;
   gap: 16px;
-  justify-content: end;
 
   .search-input {
     margin-right: auto;
