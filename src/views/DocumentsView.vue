@@ -98,6 +98,8 @@ const onGoBack = () => {
 .actions {
   padding: 2rem 0;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
   gap: 16px;
   justify-content: end;
 
