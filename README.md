@@ -26,8 +26,8 @@ This Project was done as a test to a Senior Frontend Engineer Job @ FinDox
 	-  ✅ Multi-select
 	- 🕘  Thousands of records and dozens of columns <br />
 		**The table might experience some lagging when used with Thousands of records.
-		I've created the table component using a table element, and the virtualization of the rows got a bit hairy, so I decided to skip due to short time available** <br />
-		💡 Perhaps taking a look on how some libraries do it, or even changing the structure to grid might help
+		I've created the table component using a table element, and the virtualization of the rows got a bit hairy, so I decided to skip it due to the short time available** <br />
+		💡 Perhaps taking a look at how some libraries do it or even changing the structure to a grid might help
 	-  ✅ Export
 2. ✅ Use the grid component on both the deals and documents pages
 
